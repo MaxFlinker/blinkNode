@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="blinkNode.Agent/blinkNode.Agent.csproj" />
+  <Project Path="blinkNode.App/blinkNode.App.csproj" />
+</Solution>
