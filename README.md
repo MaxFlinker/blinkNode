@@ -4,13 +4,17 @@ blinkNode starts as a workstation-only utility: it can show local activity as a 
 
 ## Downloads
 
-The current workstation release is **blinkNode Light 0.1.0 for Windows x64**. Download the ZIP from [the latest release](../../releases/latest). It requires the **.NET 8 Desktop Runtime**.
+The current workstation release is **blinkNode Light 0.1.0 for Windows x64**. The standard setup wizard is `blinkNode-Light-Setup-0.1.0-win-x64.exe`. This self-contained installer includes the .NET runtime and installs for all users under Program Files, so Windows requests administrator approval. The release download will be attached to the project’s releases page when the repository is hosted.
 
 This release contains only the standalone desktop app. It has no AI providers, Grok integration, chat service, node agent, or Tailscale connection. See [the release notes](CHANGELOG.md).
 
 ## Changelog
 
 Release history is maintained in [CHANGELOG.md](CHANGELOG.md). The current release, 0.1.0, is the first workstation-only version.
+
+## Platform roadmap
+
+The current desktop app is Windows-only. Linux and macOS desktop editions, followed by iOS and Android companion apps, are future targets; they are not included in this release.
 
 ## First version
 

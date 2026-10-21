@@ -11,5 +11,10 @@ First workstation-only release.
 - Added virtual preview mode, always-on-top control, tray menu, and pause/resume.
 - Added minimize-to-tray behavior and independent blinking controls for tray and taskbar icons.
 - Added a custom blinkNode two-light icon.
+- Added a self-contained Windows x64 setup wizard with a Start Menu shortcut and optional desktop shortcut.
 - Kept activity sensing local; this release contains no AI providers, Grok integration, chat service, node agent, or Tailscale connection.
 - Credited DiskLED by Helge Klein as an Apache-2.0-licensed functional reference; no DiskLED source code is included.
+
+## Future platform targets
+
+Linux and macOS desktop editions, followed by iOS and Android companion apps, are planned. These platforms are not part of 0.1.0.
