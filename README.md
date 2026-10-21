@@ -2,16 +2,16 @@
 
 blinkNode starts as a workstation-only utility: it can show local activity as a visible blink without any server or network connection. The later networked blinkNode can connect computers and servers across a private Tailscale network. A NUC is simply one possible node. “Public” chat means visible to authorized members of that tailnet, not open to the public internet.
 
-<section class="download-section" aria-labelledby="blinknode-title">
-  <h2 id="blinknode-title">blinkNode Light</h2>
-  <h3>Windows x64 — Free</h3>
-  <p>Standalone desktop activity lights with tray and taskbar blinking. The setup includes the .NET runtime and installs for all users.</p>
+<section class="download-section" aria-labelledby="bn-light">
+  <h2 id="bn-light">blinkNode Light</h2>
+  <h3>Light Version — Free</h3>
+  <p>Standalone Windows x64 activity lights with tray and taskbar blinking, local network activity indicators, and virtual preview mode. The setup includes the .NET runtime.</p>
   <div class="download-actions">
-    <a href="https://github.com/MaxFlinker/blinkNode/releases/latest/download/blinkNode-Light-Setup-0.1.0-win-x64.exe">Download blinkNode Light</a>
+    <a href="https://github.com/MaxFlinker/blinkNode/releases/latest/download/blinkNode-Light-Setup-0.1.0-win-x64.exe">Download Light</a>
   </div>
   <div class="download-actions">
     <a class="secondary" href="https://github.com/MaxFlinker/blinkNode/releases">Release notes</a>
-    <a class="secondary" href="https://github.com/MaxFlinker/blinkNode">blinkNode project source</a>
+    <a class="secondary" href="https://github.com/MaxFlinker/blinkNode" target="_blank" rel="noopener noreferrer">blinkNode project source</a>
   </div>
 </section>
 
