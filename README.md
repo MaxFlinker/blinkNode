@@ -7,7 +7,7 @@ blinkNode starts as a workstation-only utility: it can show local activity as a 
   <h3>Light Version — Free</h3>
   <p>Standalone Windows x64 activity lights with tray and taskbar blinking, local network activity indicators, and virtual preview mode. The setup includes the .NET runtime.</p>
   <div class="download-actions">
-    <a href="https://github.com/MaxFlinker/blinkNode/releases/latest/download/blinkNode-Light-Setup-0.1.0-win-x64.exe">Download Light</a>
+    <a href="https://github.com/MaxFlinker/blinkNode/releases/latest/download/blinkNode-Light-Setup-0.1.1-win-x64.exe">Download Light</a>
   </div>
   <div class="download-actions">
     <a class="secondary" href="https://github.com/MaxFlinker/blinkNode/releases">Release notes</a>
@@ -19,7 +19,7 @@ This release contains only the standalone desktop app. It has no AI providers, G
 
 ## Changelog
 
-Release history is maintained in [CHANGELOG.md](CHANGELOG.md). The current release, 0.1.0, is the first workstation-only version.
+Release history is maintained in [CHANGELOG.md](CHANGELOG.md). The current release, 0.1.1, is the first workstation-only version with adjustable blink pacing.
 
 ## Platform roadmap
 

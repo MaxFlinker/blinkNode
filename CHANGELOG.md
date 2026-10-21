@@ -2,6 +2,12 @@
 
 Notable changes to blinkNode Light are recorded here. This project has not yet published its future networked blinkNode features.
 
+## [0.1.1] - 2026-10-21
+
+- Increased the default activity sampling rate from once per second to four times per second, making the lights respond much sooner.
+- Added Quick, Normal, and Gentle blink pace choices.
+- Kept displayed network throughput normalized to bytes per second at every sampling pace.
+
 ## [0.1.0] - 2026-10-21
 
 First workstation-only release.

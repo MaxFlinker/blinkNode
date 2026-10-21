@@ -1,11 +1,12 @@
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 
 namespace blinkNode.App;
 
 public partial class Form1 : Form
 {
-    private readonly System.Windows.Forms.Timer sampleTimer = new() { Interval = 1000 };
-    private readonly System.Windows.Forms.Timer pulseTimer = new() { Interval = 180 };
+    private readonly System.Windows.Forms.Timer sampleTimer = new() { Interval = 250 };
+    private readonly System.Windows.Forms.Timer pulseTimer = new() { Interval = 120 };
     private readonly NotifyIcon trayIcon = new();
     private readonly Icon applicationIcon;
     private readonly Dictionary<(bool Receive, bool Send), Icon> activityIcons = [];
@@ -19,8 +20,10 @@ public partial class Form1 : Form
     private readonly CheckBox minimizeToTray = new() { Text = "Minimize to tray", AutoSize = true, ForeColor = Color.Gainsboro, Checked = true };
     private readonly CheckBox blinkTray = new() { Text = "Blink tray icon", AutoSize = true, ForeColor = Color.Gainsboro, Checked = true };
     private readonly CheckBox blinkTaskbar = new() { Text = "Blink taskbar icon", AutoSize = true, ForeColor = Color.Gainsboro, Checked = true };
+    private readonly ComboBox blinkSpeed = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 175 };
     private readonly Label title = MakeLabel("blinkNode Light", 18, Color.White, bold: true);
     private readonly Dictionary<string, (long Received, long Sent)> previous = new(StringComparer.Ordinal);
+    private long lastSampleTimestamp;
     private bool paused;
     private bool simulationOn;
     private bool automaticSimulation;
@@ -48,6 +51,7 @@ public partial class Form1 : Form
         simulate.CheckedChanged += (_, _) => SetSimulation(simulate.Checked);
         blinkTray.CheckedChanged += (_, _) => ApplyActivityIcon(currentReceive, currentSend);
         blinkTaskbar.CheckedChanged += (_, _) => ApplyActivityIcon(currentReceive, currentSend);
+        blinkSpeed.SelectedIndexChanged += (_, _) => ApplyBlinkPace();
         sampleTimer.Tick += (_, _) => SampleNetwork();
         pulseTimer.Tick += (_, _) => ClearLamps();
         Resize += (_, _) => { if (WindowState == FormWindowState.Minimized && minimizeToTray.Checked) Hide(); };
@@ -66,19 +70,20 @@ public partial class Form1 : Form
     private void BuildWindow()
     {
         Text = "blinkNode Light";
-        ClientSize = new Size(410, 335);
-        MinimumSize = new Size(390, 320);
+        ClientSize = new Size(410, 390);
+        MinimumSize = new Size(410, 390);
         BackColor = Color.FromArgb(22, 27, 36);
         ForeColor = Color.Gainsboro;
         Font = new Font("Segoe UI", 9F);
         FormBorderStyle = FormBorderStyle.FixedToolWindow;
         ShowInTaskbar = true;
 
-        var root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(20, 16, 20, 14), ColumnCount = 1, RowCount = 5 };
+        var root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(20, 16, 20, 14), ColumnCount = 1, RowCount = 6 };
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 36));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
         var header = new Panel { Dock = DockStyle.Fill };
         title.Dock = DockStyle.Left;
@@ -105,13 +110,26 @@ public partial class Form1 : Form
         root.Controls.Add(BuildLane("SEND", sendLamp, sendValue), 0, 2);
         root.Controls.Add(modeStatus, 0, 3);
 
+        blinkSpeed.Items.AddRange(new object[] { "Quick · 250 ms", "Normal · 400 ms", "Gentle · 650 ms" });
+        blinkSpeed.SelectedIndex = 0;
+        blinkSpeed.BackColor = Color.FromArgb(31, 38, 49);
+        blinkSpeed.ForeColor = Color.Gainsboro;
+        var speedRow = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, FlowDirection = FlowDirection.LeftToRight, Padding = new Padding(0, 3, 0, 0) };
+        var speedLabel = MakeLabel("Blink pace", 9, Color.FromArgb(166, 181, 201), bold: true);
+        speedLabel.Dock = DockStyle.None;
+        speedLabel.Width = 88;
+        speedLabel.Height = 27;
+        speedRow.Controls.Add(speedLabel);
+        speedRow.Controls.Add(blinkSpeed);
+        root.Controls.Add(speedRow, 0, 4);
+
         var footer = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true, FlowDirection = FlowDirection.LeftToRight };
         footer.Controls.Add(alwaysOnTop);
         footer.Controls.Add(simulate);
         footer.Controls.Add(minimizeToTray);
         footer.Controls.Add(blinkTray);
         footer.Controls.Add(blinkTaskbar);
-        root.Controls.Add(footer, 0, 4);
+        root.Controls.Add(footer, 0, 5);
         Controls.Add(root);
     }
 
@@ -175,11 +193,16 @@ public partial class Form1 : Form
             }
             catch (NetworkInformationException) { }
         }
+        lastSampleTimestamp = Stopwatch.GetTimestamp();
     }
 
     private void SampleNetwork()
     {
         if (paused || simulate.Checked) return;
+
+        var now = Stopwatch.GetTimestamp();
+        var elapsedSeconds = Math.Max((now - lastSampleTimestamp) / (double)Stopwatch.Frequency, 0.001);
+        lastSampleTimestamp = now;
 
         long received = 0, sent = 0;
         var available = false;
@@ -207,7 +230,7 @@ public partial class Form1 : Form
             {
                 automaticSimulation = true;
                 sampleTimer.Stop();
-                pulseTimer.Interval = 450;
+                pulseTimer.Interval = CurrentPace.SampleIntervalMs;
                 pulseTimer.Tick -= ClearLamps;
                 pulseTimer.Tick += SimulatedPulse;
                 pulseTimer.Start();
@@ -215,19 +238,31 @@ public partial class Form1 : Form
             return;
         }
 
-        receiveValue.Text = FormatRate(received);
-        sendValue.Text = FormatRate(sent);
+        receiveValue.Text = FormatRate(received, elapsedSeconds);
+        sendValue.Text = FormatRate(sent, elapsedSeconds);
         SetLamp(receiveLamp, received > 0);
         SetLamp(sendLamp, sent > 0);
         ApplyActivityIcon(received > 0, sent > 0);
-        pulseTimer.Stop();
-        pulseTimer.Start();
+        if (received > 0 || sent > 0)
+        {
+            pulseTimer.Stop();
+            pulseTimer.Interval = CurrentPace.PulseDurationMs;
+            pulseTimer.Start();
+        }
+        else
+        {
+            pulseTimer.Stop();
+        }
     }
 
     private static NetworkInterface[] GetAdapters() => NetworkInterface.GetAllNetworkInterfaces()
         .Where(n => n.NetworkInterfaceType != NetworkInterfaceType.Loopback && n.OperationalStatus == OperationalStatus.Up).ToArray();
 
-    private static string FormatRate(long bytes) => bytes < 1024 ? $"{bytes} B/s" : $"{bytes / 1024d:0.#} KB/s";
+    private static string FormatRate(long bytes, double elapsedSeconds)
+    {
+        var bytesPerSecond = bytes / elapsedSeconds;
+        return bytesPerSecond < 1024 ? $"{bytesPerSecond:0} B/s" : $"{bytesPerSecond / 1024d:0.#} KB/s";
+    }
 
     private void SetSimulation(bool enabled)
     {
@@ -238,7 +273,7 @@ public partial class Form1 : Form
             modeStatus.Text = "SIMULATED · sample blink, no activity data read";
             receiveValue.Text = sendValue.Text = "Preview only";
             sampleTimer.Stop();
-            pulseTimer.Interval = 360;
+            pulseTimer.Interval = CurrentPace.SampleIntervalMs;
             pulseTimer.Tick -= ClearLamps;
             pulseTimer.Tick += SimulatedPulse;
             if (!paused) pulseTimer.Start();
@@ -248,7 +283,7 @@ public partial class Form1 : Form
             pulseTimer.Stop();
             pulseTimer.Tick -= SimulatedPulse;
             pulseTimer.Tick += ClearLamps;
-            pulseTimer.Interval = 180;
+            pulseTimer.Interval = CurrentPace.PulseDurationMs;
             if (!paused) sampleTimer.Start();
             ClearLamps();
         }
@@ -262,6 +297,25 @@ public partial class Form1 : Form
         SetLamp(receiveLamp, receive);
         SetLamp(sendLamp, send);
         ApplyActivityIcon(receive, send);
+    }
+
+    private BlinkPace CurrentPace => blinkSpeed.SelectedIndex switch
+    {
+        1 => new BlinkPace(400, 150),
+        2 => new BlinkPace(650, 220),
+        _ => new BlinkPace(250, 120)
+    };
+
+    private void ApplyBlinkPace()
+    {
+        var pace = CurrentPace;
+        sampleTimer.Interval = pace.SampleIntervalMs;
+        pulseTimer.Interval = simulate.Checked || automaticSimulation ? pace.SampleIntervalMs : pace.PulseDurationMs;
+        if (simulate.Checked || automaticSimulation)
+        {
+            pulseTimer.Stop();
+            if (!paused) pulseTimer.Start();
+        }
     }
 
     private static void SetLamp(Label lamp, bool active) => lamp.BackColor = active ? lamp.ForeColor : Color.FromArgb(42, 49, 60);
@@ -302,4 +356,6 @@ public partial class Form1 : Form
     }
 
     private void RestoreWindow() { Show(); WindowState = FormWindowState.Normal; Activate(); }
+
+    private sealed record BlinkPace(int SampleIntervalMs, int PulseDurationMs);
 }

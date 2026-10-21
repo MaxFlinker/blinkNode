@@ -5,7 +5,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $repo 'blinkNode.App\blinkNode.App.csproj'
-$payload = Join-Path $repo 'publish\blinkNode-Light-0.1.0-setup-payload'
+$payload = Join-Path $repo 'publish\blinkNode-Light-0.1.1-setup-payload'
 $iss = Join-Path $PSScriptRoot 'blinkNodeLight.iss'
 
 if (-not $Iscc) {
@@ -31,4 +31,4 @@ Get-ChildItem -LiteralPath $payload -Filter '*.pdb' -File -Recurse | Remove-Item
 & $Iscc $iss
 if ($LASTEXITCODE -ne 0) { throw 'Inno Setup failed to build the installer.' }
 
-Get-Item (Join-Path $repo 'publish\blinkNode-Light-Setup-0.1.0-win-x64.exe') | Select-Object FullName, Length
+Get-Item (Join-Path $repo 'publish\blinkNode-Light-Setup-0.1.1-win-x64.exe') | Select-Object FullName, Length

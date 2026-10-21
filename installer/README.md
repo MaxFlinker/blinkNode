@@ -8,4 +8,4 @@ Run from the repository root:
 .\installer\build-setup.ps1
 ```
 
-If Inno Setup is installed in a custom location, pass its compiler path with `-Iscc`. The installer is written to `publish\blinkNode-Light-Setup-0.1.0-win-x64.exe`.
+If Inno Setup is installed in a custom location, pass its compiler path with `-Iscc`. The installer is written to `publish\blinkNode-Light-Setup-0.1.1-win-x64.exe`.

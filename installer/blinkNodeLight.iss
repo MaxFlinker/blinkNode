@@ -1,5 +1,5 @@
 #define AppName "blinkNode Light"
-#define AppVersion "0.1.0"
+#define AppVersion "0.1.1"
 #define AppPublisher "blinkNode"
 #define AppExeName "blinkNode.App.exe"
 
@@ -12,7 +12,7 @@ DefaultDirName={autopf}\blinkNode Light
 DefaultGroupName=blinkNode Light
 DisableProgramGroupPage=yes
 OutputDir=..\publish
-OutputBaseFilename=blinkNode-Light-Setup-0.1.0-win-x64
+OutputBaseFilename=blinkNode-Light-Setup-0.1.1-win-x64
 ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=admin
 Compression=lzma2
@@ -29,7 +29,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
 
 [Files]
-Source: "..\publish\blinkNode-Light-0.1.0-setup-payload\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\publish\blinkNode-Light-0.1.1-setup-payload\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\NOTICE"; DestDir: "{app}"; Flags: ignoreversion
 
