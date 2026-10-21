@@ -1,0 +1,11 @@
+blinkNode
+Copyright 2026 blinkNode contributors
+
+blinkNode is licensed under the Apache License, Version 2.0. The complete
+license text is in the LICENSE file.
+
+DiskLED by Helge Klein is acknowledged as a functional reference for Windows
+performance counters and animated tray indicators. blinkNode Light is an
+independent implementation and does not include DiskLED source code. DiskLED
+is distributed under the Apache License, Version 2.0; see
+https://github.com/helgeklein/DiskLED.

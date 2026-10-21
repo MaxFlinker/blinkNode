@@ -4,7 +4,7 @@ blinkNode starts as a workstation-only utility: it can show local activity as a 
 
 ## Downloads
 
-The current workstation release is **blinkNode Light 0.1.0 for Windows x64**. The standard setup wizard is `blinkNode-Light-Setup-0.1.0-win-x64.exe`. This self-contained installer includes the .NET runtime and installs for all users under Program Files, so Windows requests administrator approval. The release download will be attached to the project’s releases page when the repository is hosted.
+The current workstation release is **blinkNode Light 0.1.0 for Windows x64**. [Download the Windows x64 setup](https://github.com/MaxFlinker/blinkNode/releases/latest/download/blinkNode-Light-Setup-0.1.0-win-x64.exe) or browse the [release notes](https://github.com/MaxFlinker/blinkNode/releases). This self-contained installer includes the .NET runtime and installs for all users under Program Files, so Windows requests administrator approval.
 
 This release contains only the standalone desktop app. It has no AI providers, Grok integration, chat service, node agent, or Tailscale connection. See [the release notes](CHANGELOG.md).
 
@@ -42,6 +42,10 @@ The current desktop app is Windows-only. Linux and macOS desktop editions, follo
 - Treat Tailscale as private network transport, not as application authorization. blinkNode must identify enrolled users/devices and enforce chat and LED permissions itself.
 - Keep transport, node metrics, and hardware control behind interfaces so each platform exposes only capabilities it supports.
 - Do not hard-code credentials or expose a public listener.
+
+## License
+
+blinkNode is licensed under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for the DiskLED reference acknowledgment.
 
 ## Open implementation choices
 
